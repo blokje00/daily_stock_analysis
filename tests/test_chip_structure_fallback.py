@@ -47,8 +47,8 @@ class TestIsValuePlaceholder(unittest.TestCase):
         self.assertTrue(_is_value_placeholder("na"))
 
     def test_data_missing_is_placeholder(self) -> None:
-        self.assertTrue(_is_value_placeholder("数据缺失"))
-        self.assertTrue(_is_value_placeholder("未知"))
+        self.assertTrue(_is_value_placeholder("data missing"))
+        self.assertTrue(_is_value_placeholder("unknown"))
 
     def test_valid_values_not_placeholder(self) -> None:
         self.assertFalse(_is_value_placeholder(0.5))

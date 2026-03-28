@@ -52,9 +52,9 @@ class AnalyzerNewsPromptTestCase(unittest.TestCase):
 
         prompt = analyzer._get_analysis_system_prompt("zh", stock_code="600519")
 
-        self.assertIn("专注于趋势交易", prompt)
+        self.assertIn("specializing in trend trading", prompt)
         self.assertIn("多头排列必须条件", prompt)
-        self.assertIn("多头排列：MA5 > MA10 > MA20", prompt)
+        self.assertIn("Bullish alignment: MA5 > MA10 > MA20", prompt)
 
     def test_prompt_contains_time_constraints(self) -> None:
         with patch.object(GeminiAnalyzer, "_init_litellm", return_value=None):
@@ -81,12 +81,12 @@ class AnalyzerNewsPromptTestCase(unittest.TestCase):
         with patch("src.analyzer.get_config", return_value=fake_cfg):
             prompt = analyzer._format_prompt(context, "贵州茅台", news_context="news")
 
-        self.assertIn("近7日的新闻搜索结果", prompt)
-        self.assertIn("每一条都必须带具体日期（YYYY-MM-DD）", prompt)
-        self.assertIn("超出近7日窗口的新闻一律忽略", prompt)
-        self.assertIn("时间未知、无法确定发布日期的新闻一律忽略", prompt)
-        self.assertIn("财报与分红（价值投资口径）", prompt)
-        self.assertIn("禁止编造", prompt)
+        self.assertIn("in the past 7 days", prompt)
+        self.assertIn("must include a specific date (YYYY-MM-DD)", prompt)
+        self.assertIn("News outside the past 7-day window must be ignored", prompt)
+        self.assertIn("News with unknown or unverifiable publication dates must be ignored", prompt)
+        self.assertIn("Earnings and Dividends (Value Investing Perspective)", prompt)
+        self.assertIn("Fabrication is strictly prohibited", prompt)
 
     def test_prompt_prefers_context_news_window_days(self) -> None:
         with patch.object(GeminiAnalyzer, "_init_litellm", return_value=None):
@@ -106,8 +106,8 @@ class AnalyzerNewsPromptTestCase(unittest.TestCase):
         with patch("src.analyzer.get_config", return_value=fake_cfg):
             prompt = analyzer._format_prompt(context, "贵州茅台", news_context="news")
 
-        self.assertIn("近1日的新闻搜索结果", prompt)
-        self.assertIn("超出近1日窗口的新闻一律忽略", prompt)
+        self.assertIn("in the past 1 days", prompt)
+        self.assertIn("News outside the past 1-day window must be ignored", prompt)
 
     def test_format_prompt_omits_legacy_trend_checks_for_nondefault_skill_mode(self) -> None:
         with patch.object(GeminiAnalyzer, "_init_litellm", return_value=None):
@@ -138,10 +138,10 @@ class AnalyzerNewsPromptTestCase(unittest.TestCase):
         }
         prompt = analyzer._format_prompt(context, "贵州茅台", news_context=None)
 
-        self.assertIn("当前结构是否满足激活技能的关键触发条件", prompt)
-        self.assertNotIn("是否满足 MA5>MA10>MA20 多头排列", prompt)
-        self.assertNotIn("超过5%必须标注\"严禁追高\"", prompt)
-        self.assertNotIn("MA5>MA10>MA20为多头", prompt)
+        self.assertIn("Does the current structure satisfy the key trigger conditions of the active skills", prompt)
+        self.assertNotIn("Does it satisfy MA5>MA10>MA20 bullish alignment", prompt)
+        self.assertNotIn("If over 5%, must mark \"strictly no chasing\"", prompt)
+        self.assertNotIn("MA5>MA10>MA20 is bullish", prompt)
 
 
 if __name__ == "__main__":
